@@ -3,586 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل المحامين</title>
+    <title>نظام إدارة المحامين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-     :root {
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --background-color: #f0f3f6;
-    --text-color: #2c3e50;
-    --card-color: #ffffff;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --image-shadow: rgba(0, 0, 0, 0.2);
-    --modal-background: #ffffff;
-    --modal-border: #dbdbdb;
-    --modal-shadow: rgba(0, 0, 0, 0.15);
-}
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --accent-color: #e74c3c;
+        --background-color: #f7f9fc;
+        --text-color: #34495e;
+        --input-bg: #ffffff;
+        --input-border: #dde6e9;
+        --input-focus: #3498db;
+        --button-hover: #2980b9;
+        --success-color: #2ecc71;
+        --error-color: #e74c3c;
+    }
 
-       body {
-    font-family: 'Tajawal', sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    padding-bottom: 60px;
-}
+    body {
+        font-family: 'Cairo', sans-serif;
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 0;
+        color: var(--text-color);
+        line-height: 1.6;
+        overflow-x: hidden; /* منع التمرير الأفقي */
+    }
 
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            box-shadow: 0 2px 10px var(--shadow-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+    .container {
+        background-color: white;
+        border-radius: 20px;
+        padding: 20px; /* تقليل الحشوة لتقليل الفراغات */
+        max-width: 600px; /* أقصى عرض للحاوية */
+        margin: 10px auto; /* تقليل المسافة من الأعلى والأسفل وتوسيع العنصر في الوسط */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* ظل أخف للحاوية */
+    }
 
-        .title-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-        }
+    h1 {
+        color: var(--secondary-color);
+        text-align: center;
+        margin-bottom: 20px; /* تقليل المسافة من الأسفل */
+        font-size: 2em; /* حجم خط أصغر لتناسب الشاشات الصغيرة */
+        font-weight: 700;
+    }
 
-        .title-bar h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-        }
+    .welcome-message {
+        text-align: center;
+        margin-bottom: 20px; /* تقليل المسافة من الأسفل */
+        font-size: 1em; /* حجم الخط أصغر للشاشات الصغيرة */
+        color: var(--primary-color);
+        font-weight: 600;
+    }
 
-        .title-bar button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: white;
-            font-size: 20px;
-            transition: transform 0.3s ease;
-        }
+    .form-container {
+        display: grid;
+        gap: 15px; /* تقليل المسافة بين العناصر */
+    }
 
-        .title-bar button:hover {
-            transform: scale(1.1);
-        }
+    .form-group {
+        position: relative;
+    }
 
-        #bottom-toolbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: var(--card-color);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 10px var(--shadow-color);
-        }
+    input, textarea {
+        width: 100%;
+        padding: 12px; /* تقليل الحشوة لتوفير المساحة */
+        border: 2px solid var(--input-border);
+        border-radius: 8px; /* تقليل تدوير الزوايا */
+        font-size: 14px; /* حجم خط أصغر */
+        transition: all 0.3s ease;
+        background-color: var(--input-bg);
+        color: var(--text-color);
+    }
 
-        #bottom-toolbar a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-size: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    input:focus, textarea:focus {
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        outline: none;
+    }
 
-        #bottom-toolbar i {
-            font-size: 24px;
-            margin-bottom: 5px;
-            color: var(--primary-color);
-        }
+    label {
+        position: absolute;
+        top: -10px;
+        right: 10px;
+        background-color: white;
+        padding: 0 6px;
+        font-size: 12px; /* حجم خط أصغر */
+        color: var(--primary-color);
+        font-weight: 600;
+    }
 
-        #lawyers-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            padding: 20px;
-        }
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+    }
 
-        .lawyer-card {
-            position: relative;
-            margin: 10px;
-            flex: 1 1 calc(50% - 20px);
-            max-width: calc(50% - 20px);
-            cursor: pointer;
-        }
+    .file-input-wrapper input[type=file] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
 
-        .lawyer-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px var(--image-shadow);
-        }
+    .file-input-wrapper .btn-file-input {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
 
-        .lawyer-name {
-            position: absolute;
-            bottom: 40px;
-            left: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            text-align: center;
-        }
+    .file-input-wrapper .btn-file-input:hover {
+        background-color: var(--button-hover);
+    }
 
-        .lawyer-address {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 12px;
-        }
+    button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 10px; /* تقليل المسافة من الأعلى */
+    }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1003;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
+    button:hover {
+        background-color: var(--button-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 10px;
-            position: relative;
-        }
+    #cancel-button {
+        background-color: var(--accent-color);
+        margin-top: 5px; /* تقليل المسافة من الأعلى */
+    }
 
-        .close {
-            color: #aaa;
-            float: left;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    #cancel-button:hover {
+        background-color: #c0392b;
+    }
 
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-        }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
+    }
 
-        .modal-image {
-            width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px; /* تقليل الحشوة لتقليل الحجم */
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 500px; /* أقصى عرض أصغر */
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
 
-        .modal-content h2 {
-            margin-top: 0;
-        }
+    .close {
+        color: #aaa;
+        float: left;
+        font-size: 24px; /* حجم الخط أصغر */
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
 
-        .modal-content p {
-            margin: 5px 0;
-        }
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
-        .modal-links {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-        }
+    .modal-image {
+        width: 100%;
+        max-height: 250px; /* أقصى ارتفاع أصغر */
+        object-fit: cover;
+        border-radius: 10px; /* تدوير زوايا أصغر */
+        margin-bottom: 15px; /* تقليل المسافة من الأسفل */
+    }
 
-        .modal-links a {
-            text-decoration: none;
-            color: var(--text-color);
-        }
+    .modal-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px; /* تقليل المسافة بين العناصر */
+        margin-top: 20px; /* تقليل المسافة من الأعلى */
+    }
 
-        .modal-links i {
-            font-size: 24px;
-            margin: 0 5px;
-        }
+    .modal-links a {
+        font-size: 24px; /* حجم الخط أصغر */
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+    }
 
-        .form-container {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: var(--card-color);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            width: 90%;
-            max-width: 500px;
-        }
+    .modal-links a:hover {
+        color: var(--secondary-color);
+        transform: scale(1.05); /* تكبير الرابط بشكل أقل */
+    }
 
-        .form-container form {
-            display: flex;
-            flex-direction: column;
-        }
+    #status {
+        text-align: center;
+        margin-top: 10px; /* تقليل المسافة من الأعلى */
+        font-weight: bold;
+        padding: 12px; /* تقليل الحشوة لتقليل الحجم */
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
 
-        .form-container form input,
-        .form-container form textarea {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid var(--text-color);
-            border-radius: 5px;
-            font-family: 'Tajawal', sans-serif;
-        }
+    .success {
+        background-color: var(--success-color);
+        color: white;
+    }
 
-        .form-container form button {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: var(--primary-color);
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
+    .error {
+        background-color: var(--error-color);
+        color: white;
+    }
 
-        .form-container form button:hover {
-            background-color: var(--secondary-color);
-        }
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px; /* تقليل المسافة من اليمين */
+        color: var(--primary-color);
+        cursor: pointer;
+    }
 
-        #cancel-button {
-            background-color: var(--card-color);
-            color: var(--text-color);
-            border: 1px solid var(--text-color);
-            margin-top: 5px;
-        }
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 180px; /* عرض أصغر */
+        background-color: var(--secondary-color);
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px; /* تقليل الحشوة */
+        position: absolute;
+        z-index: 1;
+        bottom: 120%;
+        left: 50%;
+        margin-left: -90px; /* المحاذاة الأفقية للنص */
+        opacity: 0;
+        transition: opacity 0.5s, visibility 0.5s;
+        font-size: 12px; /* حجم الخط أصغر */
+    }
 
-        #cancel-button:hover {
-            background-color: var(--text-color);
-            color: var(--card-color);
-        }
-
-        #search-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 100px;
-            z-index: 1002;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        #search-container.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #search-input {
-            width: 80%;
-            max-width: 600px;
-            padding: 15px;
-            border: none;
-            border-radius: 30px;
-            font-size: 18px;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        #search-input:focus {
-            outline: none;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        #close-search {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 30px;
-            color: white;
-            cursor: pointer;
-        }
-
-        #sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 280px;
-            height: 100%;
-            background-color: var(--card-color);
-            box-shadow: -2px 0 10px var(--shadow-color);
-            padding-top: 70px;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            z-index: 1001;
-        }
-
-        #sidebar.active {
-            transform: translateX(0);
-        }
-
-        .close-sidebar-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        #sidebar nav ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        #sidebar nav ul li {
-            padding: 15px 25px;
-            border-bottom: 1px solid var(--background-color);
-        }
-
-        #sidebar nav ul li a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-        }
-
-        #sidebar nav ul li a i {
-            margin-left: 15px;
-            font-size: 20px;
-            color: var(--primary-color);
-        }
-
-        #filter-section {
-            background-color: var(--card-color);
-            padding: 15px;
-            margin: 10px 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #filter-type {
-            width: 30%;
-            padding: 10px;
-            border: 1px solid var(--primary-color);
-            border-radius: 5px;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        #filter-input {
-            width: 65%;
-            padding: 10px;
-            border: 1px solid var(--primary-color);
-            border-radius: 5px;
-            font-family: 'Tajawal', sans-serif;
-        }
-.message-icon {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    background-color: var(--primary-color);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px var(--shadow-color);
-    z-index: 1000;
-}
-#messageModal {
-            display: none;
-            position: fixed;
-            bottom: 25px;
-            right: 50px;
-            width: 250px;
-            height: 450px;
-            background-color: #FFFFFF;
-            border-radius: 35px;
-            box-shadow: 0 5px 2px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-        }
-        .modal-content {
-            width: 80%;
-            height: 80%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 25px;
-            border-bottom: 1px solid #DBDBDB;
-        }
-        .header h2 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-            color: #262626;
-        }
-
-        .header button {
-            background: none;
-            border: none;
-            color: #262626;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .message {
-            display: flex;
-            align-items: flex-end;
-            margin-bottom: 10px;
-        }
-
-        .message p {
-            margin: 0;
-            padding: 8px 12px;
-            border-radius: 18px;
-            max-width: 70%;
-            font-size: 14px;
-            line-height: 18px;
-        }
-        .message.sent p {
-            background-color: #EEE;
-            color: #262626;
-            margin-left: auto;
-        }
-
-        .message.received p {
-            background-color: #FFFFFF;
-            color: #262626;
-            border: 1px solid #DBDBDB;
-        }
-
-        .message img {
-            max-width: 30%;
-            border-radius: 5px;
-        }
-        .message-input {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-top: 1px solid #DBDBDB;
-        }
-
-        .message-input textarea {
-            flex-grow: 1;
-            border: 1px solid #DBDBDB;
-            border-radius: 18px;
-            padding: 8px 12px;
-            font-size: 14px;
-            resize: none;
-            outline: none;
-        }
-        .message-input button {
-            background: none;
-            border: none;
-            color: #0095F6;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 8px 12px;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-.file-label {
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        .file-label svg {
-            width: 24px;
-            height: 24px;
-            fill: #262626;
-        }
-
-    </style>
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 15;
+    }
+</style>
 </head>
 <body>
-    <header>
-        <div class="title-bar">
-            <button id="menu-btn"><i class="fas fa-bars"></i></button>
-            <h1>دليل المحامين</h1>
-            <button id="search-btn"><i class="fas fa-search"></i></button>
+    <div class="container">
+        <h1>نظام إدارة المحامين</h1>
+        <p class="welcome-message">مرحباً بك في نظام إدارة المحامين. يرجى ملء النموذج أدناه لإضافة محامي جديد.</p>
+        <div id="form-container" class="form-container">
+            <form id="lawyer-form">
+                <div class="form-group">
+                    <label for="name">اسم المحامي</label>
+                    <input type="text" id="name" name="name" required>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">أدخل الاسم الكامل للمحامي</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="address">عنوان المحامي</label>
+                    <input type="text" id="address" name="address" required>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">أدخل العنوان الكامل لمكتب المحامي</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="phone">رقم الهاتف</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">أدخل رقم الهاتف بصيغة صحيحة</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="description">وصف قصير</label>
+                    <textarea id="description" name="description" required></textarea>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">اكتب وصفاً موجزاً عن خبرات وتخصصات المحامي</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp">رقم الواتساب</label>
+                    <input type="text" id="whatsapp" name="whatsapp" required>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">أدخل رقم الواتساب بدون علامة + أو رموز</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="facebook">رابط الفيسبوك</label>
+                    <input type="url" id="facebook" name="facebook" required>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">أدخل الرابط الكامل لصفحة الفيسبوك</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="instagram">رابط الإنستقرام</label>
+                    <input type="url" id="instagram" name="instagram" required>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">أدخل الرابط الكامل لحساب الإنستقرام</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="image">صورة المحامي</label>
+                    <div class="file-input-wrapper">
+                        <button class="btn-file-input">اختر صورة</button>
+                        <input type="file" id="image" name="image" accept="image/*" required>
+                    </div>
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">اختر صورة شخصية للمحامي بجودة عالية</span>
+                    </span>
+                </div>
+                <button type="submit">إضافة المحامي</button>
+                <button type="button" id="cancel-button">إلغاء</button>
+            </form>
         </div>
-    </header>
-    <div id="filter-section">
-        <select id="filter-type">
-            <option value="name">الاسم</option>
-            <option value="address">العنوان</option>
-        </select>
-        <input type="text" id="filter-input" placeholder="أدخل كلمة البحث...">
-    </div>
-
-    <aside id="sidebar">
-        <button id="close-sidebar" class="close-sidebar-button"><i class="fas fa-times"></i></button>
-        <nav>
-            <ul>
-                <li><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li><a href="favorites.html"><i class="fas fa-heart"></i> المفضلة</a></li>
-                <li><a href="recent.html"><i class="fas fa-history"></i> آخر الزيارات</a></li>
-                <li><a href="settings.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
-                <li><a href="about.html"><i class="fas fa-info-circle"></i> عن التطبيق</a></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <div id="search-container">
-        <input type="text" id="search-input" placeholder="ابحث عن محامٍ...">
-        <i id="close-search" class="fas fa-times"></i>
-    </div>
-
-    <div id="lawyers-list">
-        <!-- سيتم إضافة بطاقات المحامين هنا بشكل ديناميكي -->
-    </div>
-
-    <div id="bottom-toolbar">
-        <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
-        <a href="#" id="add-lawyer-btn"><i class="fas fa-plus-circle"></i> إضافة محامٍ</a>
-    </div>
-
-    <div id="form-container" class="form-container">
-        <form id="lawyer-form">
-            <input type="text" id="name" name="name" placeholder="اسم المحامي" required>
-            <input type="text" id="address" name="address" placeholder="عنوان المحامي" required>
-            <input type="tel" id="phone" name="phone" placeholder="رقم الهاتف" required>
-            <textarea id="description" name="description" placeholder="وصف قصير" required></textarea>
-            <input type="text" id="whatsapp" name="whatsapp" placeholder="رقم الواتساب (بدون +)" required>
-            <input type="url" id="facebook" name="facebook" placeholder="رابط الفيسبوك" required>
-            <input type="url" id="instagram" name="instagram" placeholder="رابط الإنستقرام" required>
-            <input type="file" id="image" name="image" accept="image/*" required>
-            <button type="submit">إضافة المحامي</button>
-            <button type="button" id="cancel-button">إلغاء</button>
-        </form>
+        <div id="status"></div>
     </div>
 
     <div id="lawyer-modal" class="modal">
@@ -601,38 +360,44 @@
         </div>
     </div>
 
-    <button class="message-icon" onclick="toggleModal()">✉️</button>
-    <div id="messageModal" class="modal">
-        <div class="modal-content">
-            <div class="header">
-                <button onclick="toggleModal()">✖️</button>
-                <h2>الرسائل</h2>
-                <div></div>
-            </div>
-            <div class="messages" id="messagesContainer">
-                <!-- الرسائل ستظهر هنا -->
-            </div>
-            <div class="message-input">
-                <label for="fileInput" class="file-label">
-                    <svg aria-label="إضافة صورة أو ملف" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
-                        <path d="M6.549 5.013A1.557 1.557 0 1 0 8.106 6.57a1.557 1.557 0 0 0-1.557-1.557Z" fill-rule="evenodd"></path>
-                        <path d="m2 18.605 3.901-3.9a.908.908 0 0 1 1.284 0l2.807 2.806a.908.908 0 0 0 1.283 0l5.534-5.534a.908.908 0 0 1 1.283 0l3.905 3.905" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
-                        <path d="M18.44 2.004A3.56 3.56 0 0 1 22 5.564h0v12.873a3.56 3.56 0 0 1-3.56 3.56H5.568a3.56 3.56 0 0 1-3.56-3.56V5.563a3.56 3.56 0 0 1 3.56-3.56Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                    </svg>
-                </label>
-                <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" />
-                <textarea id="messageInput" placeholder="أرسل رسالة..." rows="1"></textarea>
-                <button onclick="sendMessage()">إرسال</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <script>
-        // إعداد Firebase
+        // ... (الكود JavaScript يبقى كما هو مع بعض الإضافات)
+
+        const fileInput = document.getElementById('image');
+        const fileInputButton = document.querySelector('.btn-file-input');
+
+        fileInputButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                fileInputButton.textContent = 'تم اختيار الصورة';
+            } else {
+                fileInputButton.textContent = 'اختر صورة';
+            }
+        });
+
+        // إضافة التحقق من صحة الإدخال
+        lawyerForm.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.style.borderColor = '#27ae60';
+                } else {
+                    this.style.borderColor = '#e74c3c';
+                }
+            });
+        });
+
+        // ... (بقية الكود JavaScript يبقى كما هو)
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
             authDomain: "messageemeapp.firebaseapp.com",
@@ -643,280 +408,83 @@
             appId: "1:278680662267:web:cb9a86a0cd4709b86222b2"
         };
 
-        // تهيئة Firebase
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        let selectedFile = null;
+        const lawyerForm = document.getElementById('lawyer-form');
+        const statusElement = document.getElementById('status');
+        const modal = document.getElementById('lawyer-modal');
+        const closeModalBtn = modal.querySelector('.close');
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuBtn = document.getElementById('menu-btn');
-            const searchBtn = document.getElementById('search-btn');
-            const closeSearchBtn = document.getElementById('close-search');
-            const sidebar = document.getElementById('sidebar');
-            const closeSidebarBtn = document.getElementById('close-sidebar');
-            const searchContainer = document.getElementById('search-container');
-                          const searchInput = document.getElementById('search-input');
-            const formContainer = document.getElementById('form-container');
-            const addLawyerBtn = document.getElementById('add-lawyer-btn');
-            const lawyerForm = document.getElementById('lawyer-form');
-            const lawyersList = document.getElementById('lawyers-list');
-            const modal = document.getElementById('lawyer-modal');
-            const closeModal = document.getElementsByClassName('close')[0];
-            const cancelButton = document.getElementById('cancel-button');
-            const filterType = document.getElementById('filter-type');
-            const filterInput = document.getElementById('filter-input');
-            let lawyers = [];
+        lawyerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            statusElement.innerHTML = 'جاري إضافة المحامي...';
+            statusElement.className = '';
 
-            function openSidebar() {
-                sidebar.classList.add('active');
-            }
+            try {
+                // Upload image
+                const file = lawyerForm.image.files[0];
+                const storageRef = storage.ref('lawyer_images/' + Date.now() + '_' + file.name);
+                const snapshot = await storageRef.put(file);
+                const image = await snapshot.ref.getDownloadURL();
 
-            function closeSidebar() {
-                sidebar.classList.remove('active');
-            }
-
-            function openSearch() {
-                searchContainer.classList.add('active');
-                searchInput.focus();
-            }
-
-            function closeSearch() {
-                searchContainer.classList.remove('active');
-                searchInput.value = '';
-            }
-
-            function openAddLawyerForm() {
-                formContainer.style.display = 'block';
-            }
-
-            function closeAddLawyerForm() {
-                formContainer.style.display = 'none';
-                lawyerForm.reset();
-            }
-
-            function displayLawyers(lawyersArray) {
-                lawyersList.innerHTML = '';
-                lawyersArray.forEach(lawyer => {
-                    const card = document.createElement('div');
-                    card.classList.add('lawyer-card');
-                    card.innerHTML = `
-                        <img src="${lawyer.image}" alt="${lawyer.name}">
-                        <div class="lawyer-name">${lawyer.name}</div>
-                        <div class="lawyer-address">${lawyer.address}</div>
-                    `;
-                    card.addEventListener('click', () => showLawyerDetails(lawyer));
-                    lawyersList.appendChild(card);
-                });
-            }
-
-            function showLawyerDetails(lawyer) {
-                window.location.href = `lawyer-details.html?id=${lawyer.id}`;
-            }
-
-            menuBtn.addEventListener('click', openSidebar);
-            closeSidebarBtn.addEventListener('click', closeSidebar);
-            searchBtn.addEventListener('click', openSearch);
-            closeSearchBtn.addEventListener('click', closeSearch);
-            addLawyerBtn.addEventListener('click', openAddLawyerForm);
-            cancelButton.addEventListener('click', closeAddLawyerForm);
-
-            closeModal.onclick = function() {
-                modal.style.display = 'none';
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-                if (event.target == formContainer) {
-                    closeAddLawyerForm();
-                }
-            }
-
-            document.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape') {
-                    closeSearch();
-                    closeSidebar();
-                    modal.style.display = 'none';
-                    closeAddLawyerForm();
-                }
-            });
-
-            function filterLawyers() {
-                const filterValue = filterInput.value.toLowerCase().trim();
-                console.log("Filter type:", filterType.value);
-                console.log("Filter value:", filterValue);
-                const filteredLawyers = lawyers.filter(lawyer => {
-                    if (filterType.value === 'name') {
-                        return lawyer.name.toLowerCase().includes(filterValue);
-                    } else if (filterType.value === 'address') {
-                        console.log("Checking address:", lawyer.address.toLowerCase(), "includes", filterValue);
-                        return lawyer.address.toLowerCase().includes(filterValue);
-                    }
-                    return false;
-                });
-                console.log("Filtered lawyers:", filteredLawyers);
-                displayLawyers(filteredLawyers);
-            }
-
-            filterInput.addEventListener('input', filterLawyers);
-            filterType.addEventListener('change', filterLawyers);
-
-            lawyerForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-                const formData = new FormData(lawyerForm);
-                const lawyerData = {
-                    name: formData.get('name'),
-                    address: formData.get('address'),
-                    phone: formData.get('phone'),
-                    description: formData.get('description'),
-                    imageFile: formData.get('image'),
-                    whatsapp: formData.get('whatsapp'),
-                    facebook: formData.get('facebook'),
-                    instagram: formData.get('instagram')
+                // Add lawyer data to Firestore
+                const lawyer = {
+                    name: lawyerForm.name.value,
+                    address: lawyerForm.address.value,
+                    phone: lawyerForm.phone.value,
+                    description: lawyerForm.description.value,
+                    whatsapp: lawyerForm.whatsapp.value,
+                    facebook: lawyerForm.facebook.value,
+                    instagram: lawyerForm.instagram.value,
+                    image: image,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                const imageRef = storage.ref().child(`lawyer_images/${Date.now()}_${lawyerData.imageFile.name}`);
-                imageRef.put(lawyerData.imageFile).then(snapshot => {
-                    return snapshot.ref.getDownloadURL();
-                }).then(downloadURL => {
-                    return db.collection('lawyers').add({
-                        name: lawyerData.name,
-                        address: lawyerData.address,
-                        phone: lawyerData.phone,
-                        description: lawyerData.description,
-                        image: downloadURL,
-                        whatsapp: lawyerData.whatsapp,
-                        facebook: lawyerData.facebook,
-                        instagram: lawyerData.instagram
-                    });
-                }).then(docRef => {
-                    console.log("Document written with ID: ", docRef.id);
-                    lawyerForm.reset();
-                    closeAddLawyerForm();
-                    loadLawyersFromDB();
-                }).catch(error => {
-                    console.error("Error adding document: ", error);
-                });
-            });
-
-            function loadLawyersFromDB() {
-                db.collection('lawyers').get().then(querySnapshot => {
-                    lawyers = querySnapshot.docs.map(doc => ({
-                        id: doc.id,
-                        name: doc.data().name,
-                        address: doc.data().address,
-                        phone: doc.data().phone,
-                        description: doc.data().description,
-                        image: doc.data().image,
-                        whatsapp: doc.data().whatsapp,
-                        facebook: doc.data().facebook,
-                        instagram: doc.data().instagram
-                    }));
-                    displayLawyers(lawyers);
-                    console.log("Loaded lawyers:", lawyers);
-                }).catch(error => {
-                    console.error("Error loading lawyers:", error);
-                });
+                const docRef = await db.collection("lawyers").add(lawyer);
+                console.log("Document written with ID: ", docRef.id);
+                statusElement.innerHTML = 'تمت إضافة المحامي بنجاح!';
+                statusElement.className = 'success';
+                lawyerForm.reset();
+                
+                // Display the modal with the new lawyer's information
+                displayLawyerModal(lawyer);
+            } catch (error) {
+                console.error("Error adding lawyer: ", error);
+                statusElement.innerHTML = 'حدث خطأ أثناء إضافة المحامي. يرجى المحاولة مرة أخرى.';
+                statusElement.className = 'error';
             }
-
-            loadLawyersFromDB();
         });
 
-        function toggleModal() {
-            const modal = document.getElementById('messageModal');
-            modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
-            if (modal.style.display === 'block') {
-                loadMessages();
+        function displayLawyerModal(lawyer) {
+            modal.querySelector('.modal-image').src = lawyer.image;
+            modal.querySelector('#modal-name').textContent = lawyer.name;
+            modal.querySelector('#modal-address').textContent = lawyer.address;
+            modal.querySelector('#modal-phone').textContent = lawyer.phone;
+            modal.querySelector('#modal-description').textContent = lawyer.description;
+            modal.querySelector('#modal-whatsapp').href = `https://wa.me/${lawyer.whatsapp}`;
+            modal.querySelector('#modal-facebook').href = lawyer.facebook;
+            modal.querySelector('#modal-instagram').href = lawyer.instagram;
+            modal.style.display = 'block';
+        }
+
+        closeModalBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
             }
         }
 
-        function handleFileSelect(event) {
-            selectedFile = event.target.files[0];
-            if (selectedFile) {
-                sendFile();
-            }
+        document.getElementById('cancel-button').onclick = function() {
+            lawyerForm.reset();
+            statusElement.innerHTML = '';
+            statusElement.className = '';
         }
-        function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value.trim();
-
-            if (message === '') return;
-
-            db.collection('messages').add({
-                text: message,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                status: 'sent',
-                type: 'text'
-            }).then(() => {
-                messageInput.value = '';
-                loadMessages();
-            }).catch((error) => {
-                console.error('خطأ في إرسال الرسالة: ', error);
-            });
-        }
-
-        function sendFile() {
-            if (!selectedFile) return;
-
-            const storageRef = storage.ref(`files/${Date.now()}_${selectedFile.name}`);
-            const uploadTask = storageRef.put(selectedFile);
-
-            uploadTask.on('state_changed', 
-                (snapshot) => {
-                    // يمكن إضافة شريط تقدم هنا
-                }, 
-                (error) => {
-                    console.error('خطأ في رفع الملف: ', error);
-                }, 
-                () => {
-                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        db.collection('messages').add({
-                            imageUrl: downloadURL,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            status: 'sent',
-                            type: 'image'
-                        }).then(() => {
-                            selectedFile = null;
-                            document.getElementById('fileInput').value = '';
-                            loadMessages();
-                        }).catch((error) => {
-                            console.error('خطأ في إرسال الرسالة: ', error);
-                        });
-                    });
-                }
-            );
-        }
-
-        function loadMessages() {
-            const messagesContainer = document.getElementById('messagesContainer');
-            messagesContainer.innerHTML = '';
-
-            db.collection('messages').orderBy('timestamp', 'desc').limit(20).get().then((snapshot) => {
-                const messages = [];
-                snapshot.forEach((doc) => {
-                    messages.push(doc.data());
-                });
-                messages.reverse().forEach((messageData) => {
-                    const messageElement = document.createElement('div');
-                    messageElement.classList.add('message', messageData.status);
-
-                    if (messageData.type === 'text') {
-                        messageElement.innerHTML = `<p>${messageData.text}</p>`;
-                    } else if (messageData.type === 'image') {
-                        messageElement.innerHTML = `<img src="${messageData.imageUrl}" alt="صورة مرسلة">`;
-                    }
-
-                    messagesContainer.appendChild(messageElement);
-                });
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            });
-        }
-
-        // تحميل الرسائل عند بدء التطبيق
-        loadMessages();
     </script>
 </body>
 </html>
