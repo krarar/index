@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيقاالمحامين</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+     :root {
+    --primary-color: #4a90e2; /* لون أزرق أكثر هدوءًا */
+    --secondary-color: #50e3c2; /* لون أخضر فاتح ومتناسق */
+    --background-color: #f5f7fa; /* خلفية أفتح وأكثر نظافة */
+    --text-color: #2c3e50; /* لون نص أكثر قوة */
+    --border-radius: 10px; /* زوايا دائرية أكثر */
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* تأثير ظل أكثر وضوحًا */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.header .counter {
+    font-size: 1rem;
+    background-color: var(--secondary-color);
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+}
+
+.card-container {
+    padding: 80px 15px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card:active {
+    transform: scale(0.98);
+}
+
+.card-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.card h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.card a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-color: #f7f7f7;
+}
+
+.card-actions button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.card-actions button:hover {
+    background-color: var(--secondary-color);
+}
+
+#loading {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+.edit-form {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.edit-form-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    max-width: 400px;
+    margin: 40px auto;
+}
+
+.edit-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.edit-form input,
+.edit-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.edit-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-form button:hover {
+    background-color: var(--secondary-color);
+}
+
+.close-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+}
+
+#addLawyerBtn {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    transition: background-color 1.3s ease;
+}
+
+#addLawyerBtn:hover {
+    background-color: var(--secondary-color);
+}
+
+.card {
+    position: relative;
+}
+
+.card-checkbox {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+}
+#deleteSelectedBtn {
+    position: fixed;
+    bottom: 100px; /* وضعه أعلى من زر الإضافة */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    transition: background-color 0.3s ease;
+    display: block; /* تأكد من أنه يظهر */
+    z-index: 1001; /* يظهر فوق العناصر */
+}
+
+#deleteSelectedBtn:hover {
+    background-color: #c0392b;
+}
+
+.header .counter {
+    font-size: 1rem;
+    background-color: var(--secondary-color);
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+    margin-left: 20px;
+}
+
+
+</style>
+</head>
+<body>
+    <div class="header">
+        <h1>اسم التطبيق <span class="counter">عدداالمحامين: <span id="lawyerCount">0</span></span></h1>
+    </div>
+
+    <div class="card-container" id="cards-container"></div>
+    <div id="loading">جاري تحميل البيانات...</div>
+
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+    <div class="edit-form" id="editForm">
+        <div class="close-form" onclick="closeEditForm()">×</div>
+        <div class="edit-form-content">
+            <h2 id="formTitle">تعديل البيانات</h2>
+            <input type="text" id="editName" placeholder="اسماالمحامين" required>
+            <input type="text" id="editAddress" placeholder="العنوان" required>
+            <textarea id="editDescription" placeholder="الوصف" required></textarea>
+            <input type="tel" id="editPhone" placeholder="رقم الهاتف" required>
+            <input type="tel" id="editWhatsApp" placeholder="رقم الواتساب" required>
+            <input type="url" id="editFacebook" placeholder="رابط فيسبوك">
+            <input type="url" id="editInstagram" placeholder="رابط إنستغرام">
+            <input type="file" id="editImage" accept="image/*">
+            <button onclick="saveEdits()">حفظ التعديلات</button>
+        </div>
+    </div>
+
+    <button id="addLawyerBtn" onclick="showAddForm()">+</button>
+    <button id="deleteSelectedBtn" onclick="deleteSelected()">🗑️</button>
+
+    <script>
+        // تكوين Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
+            authDomain: "messageemeapp.firebaseapp.com",
+            projectId: "messageemeapp",
+            storageBucket: "messageemeapp.appspot.com",
+            messagingSenderId: "278680662267",
+            appId: "1:278680662267:web:cb9a86a0cd4709b86222b2"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        let editingDocId = null;
+        let selectedCards = new Set();
+
+        // تحديث عدد السيارت
+        async function updateLawyerCount() {
+            try {
+                const snapshot = await db.collection('lawyers').get();
+                const count = snapshot.size;
+                document.getElementById('lawyerCount').textContent = count;
+            } catch (error) {
+                console.error("Error fetching lawyer count: ", error);
+            }
+        }
+
+        // جلب وعرض البيانات من مجموعة 'lawyers'
+        async function fetchAndDisplayData() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            try {
+                const snapshot = await db.collection('lawyers').get();
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="text-align: center; padding: 20px;">لا توجد بيانات لعرضها.</p>';
+                } else {
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            <input type="checkbox" class="card-checkbox" onchange="toggleCardSelection('${doc.id}', this)">
+                            <img src="${data.image || '/api/placeholder/400/200'}" alt="${data.name}" class="card-image" id="img-${doc.id}">
+                            <div class="card-content">
+                                <h2>${data.name}</h2>
+                                <p><strong>العنوان:</strong> ${data.address}</p>
+                                <p><strong>الوصف:</strong> ${data.description}</p>
+                                <p><strong>الهاتف:</strong> <a href="tel:${data.phone}">${data.phone}</a></p>
+                                <p><strong>واتساب:</strong> <a href="https://wa.me/${data.whatsapp.replace(/\D/g,'')}" target="_blank">${data.whatsapp}</a></p>
+                                ${data.facebook ? `<p><strong>فيسبوك:</strong> <a href="${data.facebook}" target="_blank">الملف الشخصي</a></p>` : ''}
+                                ${data.instagram ? `<p><strong>إنستغرام:</strong> <a href="${data.instagram}" target="_blank">الحساب</a></p>` : ''}
+                            </div>
+                            <div class="card-actions">
+                                <button onclick="showEditForm('${doc.id}')">تعديل</button>
+                                <button onclick="deleteDocument('${doc.id}')">حذف</button>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+                updateLawyerCount(); // تحديث العداد بعد عرض البيانات
+            } catch (error) {
+                console.error("Error fetching documents: ", error);
+                container.innerHTML = '<p style="text-align: center; padding: 20px; color: red;">حدث خطأ أثناء تحميل البيانات.</p>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // تبديل تحديد البطاقة
+        function toggleCardSelection(docId, checkbox) {
+            if (checkbox.checked) {
+                selectedCards.add(docId);
+            } else {
+                selectedCards.delete(docId);
+            }
+            updateDeleteSelectedButton();
+        }
+
+        // تحديث زر حذف المحدد
+        function updateDeleteSelectedButton() {
+            const deleteBtn = document.getElementById('deleteSelectedBtn');
+            if (selectedCards.size > 0) {
+                deleteBtn.style.display = 'block';
+                deleteBtn.textContent = `🗑️ (${selectedCards.size})`;
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+        }
+
+        // حذف البطاقات المحددة
+        async function deleteSelected() {
+            if (selectedCards.size === 0) return;
+            
+            if (confirm(`هل أنت متأكد من رغبتك في حذف ${selectedCards.size} بطاقة محددة؟`)) {
+                try {
+                    const batch = db.batch();
+                    selectedCards.forEach(docId => {
+                        const docRef = db.collection('lawyers').doc(docId);
+                        batch.delete(docRef);
+                    });
+                    await batch.commit();
+                    alert('تم حذف البطاقات المحددة بنجاح!');
+                    selectedCards.clear();
+                    updateDeleteSelectedButton();
+                    fetchAndDisplayData(); // سيقوم بتحديث العداد أيضًا
+                } catch (error) {
+                    console.error('Error deleting selected documents: ', error);
+                    alert('حدث خطأ أثناء حذف البطاقات المحددة.');
+                }
+            }
+        }
+
+        // عرض نموذج التعديل
+        async function showEditForm(docId) {
+            editingDocId = docId;
+            document.getElementById('formTitle').textContent = 'تعديل البيانات';
+            try {
+                const doc = await db.collection('lawyers').doc(docId).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('editName').value = data.name || '';
+                    document.getElementById('editAddress').value = data.address || '';
+                    document.getElementById('editDescription').value = data.description || '';
+                    document.getElementById('editPhone').value = data.phone || '';
+                    document.getElementById('editWhatsApp').value = data.whatsapp || '';
+                    document.getElementById('editFacebook').value = data.facebook || '';
+                    document.getElementById('editInstagram').value = data.instagram || '';
+                }
+                document.getElementById('editForm').style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching document: ', error);
+                alert('حدث خطأ أثناء تحميل البيانات للتعديل.');
+            }
+        }
+
+        // عرض نموذج الإضافة
+        function showAddForm() {
+            editingDocId = null;
+            document.getElementById('formTitle').textContent = 'إضافةاالمحامين جديد';
+            document.getElementById('editForm').style.display = 'block';
+            document.getElementById('editName').value = '';
+            document.getElementById('editAddress').value = '';
+            document.getElementById('editDescription').value = '';
+            document.getElementById('editPhone').value = '';
+            document.getElementById('editWhatsApp').value = '';
+            document.getElementById('editFacebook').value = '';
+            document.getElementById('editInstagram').value = '';
+            document.getElementById('editImage').value = '';
+        }
+
+        // إغلاق نموذج التعديل
+        function closeEditForm() {
+            document.getElementById('editForm').style.display = 'none';
+        }
+
+        // حفظ التعديلات أو إضافة محامي جديد
+        async function saveEdits() {
+            const name = document.getElementById('editName').value;
+            const address = document.getElementById('editAddress').value;
+            const description = document.getElementById('editDescription').value;
+            const phone = document.getElementById('editPhone').value;
+            const whatsapp = document.getElementById('editWhatsApp').value;
+            const facebook = document.getElementById('editFacebook').value;
+            const instagram = document.getElementById('editInstagram').value;
+            const imageFile = document.getElementById('editImage').files[0];
+
+            if (!name || !address || !description || !phone || !whatsapp) {
+                alert('يرجى ملء جميع الحقول المطلوبة.');
+                return;
+            }
+
+            try {
+                let imageUrl = null;
+                if (imageFile) {
+                    imageUrl = await uploadImage(imageFile);
+                }
+
+                const lawyerData = {
+                    name, address, description, phone, whatsapp, facebook, instagram
+                };
+
+                if (imageUrl) {
+                    lawyerData.image = imageUrl;
+                }
+
+                if (editingDocId) {
+                    // تحديث محامي موجود
+                    await db.collection('lawyers').doc(editingDocId).update(lawyerData);
+                    alert('تم تحديث البيانات بنجاح!');
+                } else {
+                    // إضافة محامي جديد
+                    await db.collection('lawyers').add(lawyerData);
+                    alert('تمت إضافة السواق بنجاح!');
+                }
+                closeEditForm();
+                fetchAndDisplayData(); // سيقوم بتحديث العداد أيضًا
+            } catch (error) {
+                console.error('Error saving document: ', error);
+                alert('حدث خطأ أثناء حفظ البيانات.');
+            }
+        }
+
+        // حذف المستند
+        async function deleteDocument(docId) {
+            if (confirm('هل أنت متأكد من رغبتك في حذف هذا المستند؟')) {
+                try {
+                    await db.collection('lawyers').doc(docId).delete();
+                    alert('تم حذف المستند بنجاح!');
+                    fetchAndDisplayData(); // سيقوم بتحديث العداد أيضًا
+                } catch (error) {
+                    console.error('Error deleting document: ', error);
+                    alert('حدث خطأ أثناء حذف المستند.');
+                }
+            }
+        }
+
+        // تحميل الصورة وتحديث الرابط في Firebase
+        async function uploadImage(file) {
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`images/${Date.now()}_${file.name}`);
+            await fileRef.put(file);
+            return await fileRef.getDownloadURL();
+        }
+
+        // بدء التحميل عند فتح الصفحة
+        window.onload = fetchAndDisplayData;
+    </script>
+</body>
+</html>
