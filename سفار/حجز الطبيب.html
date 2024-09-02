@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض تفاصيل الحجز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f3f6;
+            color: #2c3e50;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .card {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .lawyer-card {
+            border: 1px solid #3498db;
+            background-color: #eaf2f8;
+        }
+        .lawyer-card h2 {
+            color: #3498db;
+        }
+        .booking-card {
+            border: 1px solid #bdc3c7;
+            background-color: #ffffff;
+        }
+        .booking-card h2 {
+            color: #3498db;
+        }
+        .booking-card p {
+            margin: 5px 0;
+        }
+        .new-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .new-tag.clicked {
+            background-color: #2c3e50;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: #fff;
+            background-color: #3498db;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        .card-header {
+            font-weight: bold;
+            font-size: 20px;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h1>تفاصيل المحامي</h1>
+            <div id="lawyer-details" class="card lawyer-card">
+                <!-- سيتم إضافة تفاصيل المحامي هنا -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h1>تفاصيل الحجوزات</h1>
+            <div id="bookings-list">
+                <!-- سيتم إضافة تفاصيل الحجوزات هنا -->
+            </div>
+        </div>
+
+        <a href="index.html" class="back-button">العودة إلى الصفحة الرئيسية</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <script>
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
+            authDomain: "messageemeapp.firebaseapp.com",
+            databaseURL: "https://messageemeapp-default-rtdb.firebaseio.com",
+            projectId: "messageemeapp",
+            storageBucket: "messageemeapp.appspot.com",
+            messagingSenderId: "278680662267",
+            appId: "1:278680662267:web:cb9a86a0cd4709b86222b2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const lawyerDetails = document.getElementById('lawyer-details');
+            const bookingsList = document.getElementById('bookings-list');
+
+            // استرجاع بيانات المحامي
+            const urlParams = new URLSearchParams(window.location.search);
+            const lawyerId = urlParams.get('lawyerId');
+
+            if (lawyerId) {
+                db.collection('lawyers').doc(lawyerId).get().then(doc => {
+                    if (doc.exists) {
+                        const lawyer = doc.data();
+                        lawyerDetails.innerHTML = `
+                            <div class="card-header">بطاقة المحامي</div>
+                            <img src="${lawyer.imageURL || 'default-image.jpg'}" alt="صورة المحامي">
+                            <p><strong>الاسم:</strong> ${lawyer.name || 'غير متوفر'}</p>
+                            <p><strong>العنوان:</strong> ${lawyer.address || 'غير متوفر'}</p>
+                            <p><strong>رقم الهاتف:</strong> ${lawyer.phone || 'غير متوفر'}</p>
+                            <p><strong>الوصف:</strong> ${lawyer.description || 'غير متوفر'}</p>
+                        `;
+                    } else {
+                        console.log("لا يوجد محامي بهذا المعرف");
+                        lawyerDetails.innerHTML = '<p>عذراً، لم يتم العثور على بيانات لهذا المحامي.</p>';
+                    }
+                }).catch(error => {
+                    console.error("خطأ في استرجاع بيانات المحامي:", error);
+                    lawyerDetails.innerHTML = '<p>حدث خطأ أثناء تحميل بيانات المحامي. يرجى المحاولة مرة أخرى لاحقاً.</p>';
+                });
+            }
+
+            // استرجاع بيانات الحجوزات
+            db.collection('bookings').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+                bookingsList.innerHTML = ''; // مسح المحتوى الحالي
+                snapshot.forEach(doc => {
+                    const booking = doc.data();
+                    const isNew = new Date() - new Date(booking.timestamp.seconds * 1000) < 24 * 60 * 60 * 1000; // التحقق من أن الحجز هو أقل من 24 ساعة
+
+                    const bookingCard = document.createElement('div');
+                    bookingCard.classList.add('card', 'booking-card');
+                    bookingCard.style.position = 'relative'; // التأكد من أن العلامة الجديدة في الموضع الصحيح
+                    if (isNew) {
+                        const newTag = document.createElement('div');
+                        newTag.classList.add('new-tag');
+                        newTag.textContent = 'جديد';
+                        newTag.onclick = () => {
+                            newTag.classList.add('clicked');
+                            setTimeout(() => newTag.remove(), 300);
+                        };
+                        bookingCard.appendChild(newTag);
+                    }
+
+                    bookingCard.innerHTML += `
+                        <div class="card-header">تفاصيل الحجز</div>
+                        <img src="${booking.Image || 'default-image.jpg'}" alt="صورة الحجز">
+                        <p><strong>اسم المحامي:</strong> ${booking.lawyerName || 'غير متوفر'}</p>
+                        <p><strong>عنوان المحامي:</strong> ${booking.lawyerAddress || 'غير متوفر'}</p>
+                        <p><strong>رقم هاتف المحامي:</strong> ${booking.lawyerPhone || 'غير متوفر'}</p>
+                        <p><strong>وصف المحامي:</strong> ${booking.lawyerDescription || 'غير متوفر'}</p>
+                        <div class="card-header">معلومات المستخدم</div>
+                        <p><strong>اسم المستخدم:</strong> ${booking.userName || 'غير متوفر'}</p>
+                        <p><strong>عنوان المستخدم:</strong> ${booking.userAddress || 'غير متوفر'}</p>
+                        <p><strong>رقم هاتف المستخدم:</strong> ${booking.userPhone || 'غير متوفر'}</p>
+                        <p><strong>تفاصيل الحجز:</strong> ${booking.bookingDetails || 'غير متوفر'}</p>
+                        <p><strong>تاريخ ووقت الحجز:</strong> ${new Date(booking.timestamp.seconds * 1000).toLocaleString()}</p>
+                    `;
+
+                    bookingsList.appendChild(bookingCard);
+                });
+            }, error => {
+                console.error("خطأ في استرجاع بيانات الحجوزات:", error);
+                bookingsList.innerHTML = '<p>حدث خطأ أثناء تحميل بيانات الحجوزات. يرجى المحاولة مرة أخرى لاحقاً.</p>';
+            });
+        });
+    </script>
+</body>
+</html>

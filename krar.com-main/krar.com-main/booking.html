@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة الحجز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f3f6;
+            color: #2c3e50;
+            margin: 0;
+            padding: 20px;
+        }
+        .booking-form {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .booking-form h1 {
+            margin-bottom: 20px;
+            color: #3498db;
+            font-size: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        .submit-button {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: #fff;
+            background-color: #e67e22;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .submit-button:hover {
+            background-color: #d35400;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="booking-form">
+        <h1>طلب حجز</h1>
+        <form id="booking-form">
+            <input type="hidden" id="lawyer-id" name="lawyerId">
+            <input type="hidden" id="lawyer-name" name="lawyerName">
+            <input type="hidden" id="lawyer-address" name="lawyerAddress">
+            <input type="hidden" id="lawyer-phone" name="lawyerPhone">
+            <input type="hidden" id="lawyer-description" name="lawyerDescription">
+            <input type="hidden" id="lawyer-image" name="lawyerImage">
+
+            <div class="form-group">
+                <label for="user-name">اسمك</label>
+                <input type="text" id="user-name" name="userName" required>
+            </div>
+            <div class="form-group">
+                <label for="user-address">عنوانك</label>
+                <input type="text" id="user-address" name="userAddress" required>
+            </div>
+            <div class="form-group">
+                <label for="user-phone">رقم هاتفك</label>
+                <input type="text" id="user-phone" name="userPhone" required>
+            </div>
+            <div class="form-group">
+                <label for="booking-details">تفاصيل الحجز</label>
+                <textarea id="booking-details" name="bookingDetails" required></textarea>
+            </div>
+            <button type="submit" class="submit-button">إرسال الطلب</button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
+            authDomain: "messageemeapp.firebaseapp.com",
+            databaseURL: "https://messageemeapp-default-rtdb.firebaseio.com",
+            projectId: "messageemeapp",
+            storageBucket: "messageemeapp.appspot.com",
+            messagingSenderId: "278680662267",
+            appId: "1:278680662267:web:cb9a86a0cd4709b86222b2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lawyerId = urlParams.get('id');
+            const lawyerName = urlParams.get('name');
+            const lawyerAddress = urlParams.get('address');
+            const lawyerPhone = urlParams.get('phone');
+            const lawyerDescription = urlParams.get('description');
+            const lawyerImage = urlParams.get('image');
+
+            if (lawyerId) {
+                document.getElementById('lawyer-id').value = lawyerId;
+                document.getElementById('lawyer-name').value = lawyerName;
+                document.getElementById('lawyer-address').value = lawyerAddress;
+                document.getElementById('lawyer-phone').value = lawyerPhone;
+                document.getElementById('lawyer-description').value = lawyerDescription;
+                document.getElementById('lawyer-image').value = lawyerImage;
+            } else {
+                alert("لم يتم تحديد المحامي. يرجى العودة واختيار محامي من القائمة.");
+                window.location.href = "index.html";
+            }
+        });
+
+        document.getElementById('booking-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const bookingData = {
+                lawyerId: formData.get('lawyerId'),
+                lawyerName: formData.get('lawyerName'),
+                lawyerAddress: formData.get('lawyerAddress'),
+                lawyerPhone: formData.get('lawyerPhone'),
+                lawyerDescription: formData.get('lawyerDescription'),
+                lawyerImage: formData.get('lawyerImage'),
+                userName: formData.get('userName'),
+                userAddress: formData.get('userAddress'),
+                userPhone: formData.get('userPhone'),
+                bookingDetails: formData.get('bookingDetails'),
+                timestamp: new Date()
+            };
+
+            db.collection('bookings').add(bookingData)
+                .then(() => {
+                    alert("تم إرسال طلب الحجز بنجاح.");
+                    window.location.href = "index.html";
+                })
+                .catch(error => {
+                    console.error("خطأ في إرسال طلب الحجز:", error);
+                    alert("حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.");
+                });
+        });
+    </script>
+</body>
+</html>
