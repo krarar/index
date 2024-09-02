@@ -3,488 +3,439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة المحامين</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>الدليل الشامل المحدث</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
+    <style>
+        
     :root {
-        --primary-color: #3498db;
-        --secondary-color: #2c3e50;
-        --accent-color: #e74c3c;
-        --background-color: #f7f9fc;
-        --text-color: #34495e;
-        --input-bg: #ffffff;
-        --input-border: #dde6e9;
-        --input-focus: #3498db;
-        --button-hover: #2980b9;
-        --success-color: #2ecc71;
-        --error-color: #e74c3c;
-    }
-
-    body {
-        font-family: 'Cairo', sans-serif;
-        background-color: var(--background-color);
-        margin: 0;
-        padding: 0;
-        color: var(--text-color);
-        line-height: 1.6;
-        overflow-x: hidden; /* منع التمرير الأفقي */
-    }
-
-    .container {
-        background-color: white;
-        border-radius: 20px;
-        padding: 20px; /* تقليل الحشوة لتقليل الفراغات */
-        max-width: 600px; /* أقصى عرض للحاوية */
-        margin: 10px auto; /* تقليل المسافة من الأعلى والأسفل وتوسيع العنصر في الوسط */
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* ظل أخف للحاوية */
-    }
-
-    h1 {
-        color: var(--secondary-color);
-        text-align: center;
-        margin-bottom: 20px; /* تقليل المسافة من الأسفل */
-        font-size: 2em; /* حجم خط أصغر لتناسب الشاشات الصغيرة */
-        font-weight: 700;
-    }
-
-    .welcome-message {
-        text-align: center;
-        margin-bottom: 20px; /* تقليل المسافة من الأسفل */
-        font-size: 1em; /* حجم الخط أصغر للشاشات الصغيرة */
-        color: var(--primary-color);
-        font-weight: 600;
-    }
-
-    .form-container {
-        display: grid;
-        gap: 15px; /* تقليل المسافة بين العناصر */
-    }
-
-    .form-group {
-        position: relative;
-    }
-
-    input, textarea {
-        width: 100%;
-        padding: 12px; /* تقليل الحشوة لتوفير المساحة */
-        border: 2px solid var(--input-border);
-        border-radius: 8px; /* تقليل تدوير الزوايا */
-        font-size: 14px; /* حجم خط أصغر */
-        transition: all 0.3s ease;
-        background-color: var(--input-bg);
-        color: var(--text-color);
-    }
-
-    input:focus, textarea:focus {
-        border-color: var(--input-focus);
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        outline: none;
-    }
-
-    label {
-        position: absolute;
-        top: -10px;
-        right: 10px;
-        background-color: white;
-        padding: 0 6px;
-        font-size: 12px; /* حجم خط أصغر */
-        color: var(--primary-color);
-        font-weight: 600;
-    }
-
-    .file-input-wrapper {
-        position: relative;
-        overflow: hidden;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .file-input-wrapper input[type=file] {
-        font-size: 100px;
-        position: absolute;
-        left: 0;
-        top: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .file-input-wrapper .btn-file-input {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        cursor: pointer;
-        display: inline-block;
-        width: 100%;
-        text-align: center;
-        font-weight: 600;
-        transition: background-color 0.3s ease;
-    }
-
-    .file-input-wrapper .btn-file-input:hover {
-        background-color: var(--button-hover);
-    }
-
-    button {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        width: 100%;
-        margin-top: 10px; /* تقليل المسافة من الأعلى */
-    }
-
-    button:hover {
-        background-color: var(--button-hover);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    #cancel-button {
-        background-color: var(--accent-color);
-        margin-top: 5px; /* تقليل المسافة من الأعلى */
-    }
-
-    #cancel-button:hover {
-        background-color: #c0392b;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.6);
-        backdrop-filter: blur(5px);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto;
-        padding: 20px; /* تقليل الحشوة لتقليل الحجم */
-        border: 1px solid #888;
-        width: 90%;
-        max-width: 500px; /* أقصى عرض أصغر */
-        border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-
-    .close {
-        color: #aaa;
-        float: left;
-        font-size: 24px; /* حجم الخط أصغر */
-        font-weight: bold;
-        transition: color 0.3s ease;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .modal-image {
-        width: 100%;
-        max-height: 250px; /* أقصى ارتفاع أصغر */
-        object-fit: cover;
-        border-radius: 10px; /* تدوير زوايا أصغر */
-        margin-bottom: 15px; /* تقليل المسافة من الأسفل */
-    }
-
-    .modal-links {
-        display: flex;
-        justify-content: center;
-        gap: 20px; /* تقليل المسافة بين العناصر */
-        margin-top: 20px; /* تقليل المسافة من الأعلى */
-    }
-
-    .modal-links a {
-        font-size: 24px; /* حجم الخط أصغر */
-        color: var(--primary-color);
-        transition: all 0.3s ease;
-    }
-
-    .modal-links a:hover {
-        color: var(--secondary-color);
-        transform: scale(1.05); /* تكبير الرابط بشكل أقل */
-    }
-
-    #status {
-        text-align: center;
-        margin-top: 10px; /* تقليل المسافة من الأعلى */
-        font-weight: bold;
-        padding: 12px; /* تقليل الحشوة لتقليل الحجم */
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .success {
-        background-color: var(--success-color);
-        color: white;
-    }
-
-    .error {
-        background-color: var(--error-color);
-        color: white;
-    }
-
-    .tooltip {
-        position: relative;
-        display: inline-block;
-        margin-right: 10px; /* تقليل المسافة من اليمين */
-        color: var(--primary-color);
-        cursor: pointer;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 180px; /* عرض أصغر */
-        background-color: var(--secondary-color);
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 8px; /* تقليل الحشوة */
-        position: absolute;
-        z-index: 1;
-        bottom: 120%;
-        left: 50%;
-        margin-left: -90px; /* المحاذاة الأفقية للنص */
-        opacity: 0;
-        transition: opacity 0.5s, visibility 0.5s;
-        font-size: 12px; /* حجم الخط أصغر */
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 15;
-    }
-</style>
+            --primary-color: #2ecc71;
+            --secondary-color: #3498db;
+            --text-color: #34495e;
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+        .title-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .title-bar button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .title-bar h2 {
+            margin: 0;
+            font-size: 22px;
+            text-align: center;
+            flex: 1;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px 15px;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.0em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        .category {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+        }
+        .category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .category i {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        .category:hover i {
+            color: var(--secondary-color);
+        }
+        .category h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: var(--card-bg);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+        .side-menu.active {
+            right: 0;
+        }
+        .side-menu-content {
+            padding: 20px;
+        }
+        .close-btn {
+            text-align: left;
+            padding: 10px;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .favorite-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: gold;
+            font-size: 18px;
+        }
+        #sidebar nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #sidebar nav ul li {
+            margin-bottom: 10px;
+        }
+        #sidebar nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        #sidebar nav ul li a i {
+            margin-left: 10px;
+            font-size: 20px;
+        }
+    </style>}
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>نظام إدارة المحامين</h1>
-        <p class="welcome-message">مرحباً بك في نظام إدارة المحامين. يرجى ملء النموذج أدناه لإضافة محامي جديد.</p>
-        <div id="form-container" class="form-container">
-            <form id="lawyer-form">
-                <div class="form-group">
-                    <label for="name">اسم المحامي</label>
-                    <input type="text" id="name" name="name" required>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">أدخل الاسم الكامل للمحامي</span>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label for="address">عنوان المحامي</label>
-                    <input type="text" id="address" name="address" required>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">أدخل العنوان الكامل لمكتب المحامي</span>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label for="phone">رقم الهاتف</label>
-                    <input type="tel" id="phone" name="phone" required>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">أدخل رقم الهاتف بصيغة صحيحة</span>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label for="description">وصف قصير</label>
-                    <textarea id="description" name="description" required></textarea>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">اكتب وصفاً موجزاً عن خبرات وتخصصات المحامي</span>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label for="whatsapp">رقم الواتساب</label>
-                    <input type="text" id="whatsapp" name="whatsapp" required>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">أدخل رقم الواتساب بدون علامة + أو رموز</span>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label for="facebook">رابط الفيسبوك</label>
-                    <input type="url" id="facebook" name="facebook" required>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">أدخل الرابط الكامل لصفحة الفيسبوك</span>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label for="instagram">رابط الإنستقرام</label>
-                    <input type="url" id="instagram" name="instagram" required>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">أدخل الرابط الكامل لحساب الإنستقرام</span>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label for="image">صورة المحامي</label>
-                    <div class="file-input-wrapper">
-                        <button class="btn-file-input">اختر صورة</button>
-                        <input type="file" id="image" name="image" accept="image/*" required>
-                    </div>
-                    <span class="tooltip"><i class="fas fa-info-circle"></i>
-                        <span class="tooltiptext">اختر صورة شخصية للمحامي بجودة عالية</span>
-                    </span>
-                </div>
-                <button type="submit">إضافة المحامي</button>
-                <button type="button" id="cancel-button">إلغاء</button>
-            </form>
-        </div>
-        <div id="status"></div>
+    <div class="title-bar">
+        <button id="menuBtn"><i class="fas fa-bars"></i></button>
+        <h2>الدليل الشامل</h2>
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
     </div>
 
-    <div id="lawyer-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <img class="modal-image" src="" alt="صورة المحامي">
-            <h2 id="modal-name"></h2>
-            <p id="modal-address"></p>
-            <p id="modal-phone"></p>
-            <p id="modal-description"></p>
-            <div class="modal-links">
-                <a id="modal-whatsapp" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                <a id="modal-facebook" href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                <a id="modal-instagram" href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+    <div class="side-menu" id="sideMenu">
+        <div class="side-menu-content">
+            <div class="close-btn">
+                <button id="closeMenuBtn"><i class="fas fa-times"></i></button>
             </div>
+            <h3>القائمة الجانبية</h3>
+            <aside id="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+                        <li><a href="favorites.html"><i class="fas fa-heart"></i> المفضلة</a></li>
+                        <li><a href="recent.html"><i class="fas fa-history"></i> آخر الزيارات</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                        <li><a href="about.html"><i class="fas fa-info-circle"></i> عن التطبيق</a></li>
+                    </ul>
+                </nav>
+            </aside>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-    <script>
-        // ... (الكود JavaScript يبقى كما هو مع بعض الإضافات)
+    <div class="container">
+        <h1>الدليل الشامل المحدث</h1>
 
-        const fileInput = document.getElementById('image');
-        const fileInputButton = document.querySelector('.btn-file-input');
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="ابحث في الفئات...">
+        </div>
 
-        fileInputButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            fileInput.click();
+        <main>
+            <div class="categories-grid">
+                <a href="lawyers.html" class="category" data-category="محامون">
+                    <i class="fas fa-gavel"></i>
+                    <h2>محامون</h2>
+                </a>
+                <a href="doctors.html" class="category" data-category="أطباء">
+                    <i class="fas fa-user-md"></i>
+                    <h2>أطباء</h2>
+                </a>
+                <a href="cars.html" class="category" data-category="سيارات">
+                    <i class="fas fa-car"></i>
+                    <h2>سيارات</h2>
+                </a>
+                <a href="real-estate.html" class="category" data-category="عقارات">
+                    <i class="fas fa-home"></i>
+                    <h2>عقارات</h2>
+                </a>
+                <a href="sports.html" class="category" data-category="رياضة">
+                    <i class="fas fa-futbol"></i>
+                    <h2>رياضة</h2>
+                </a>
+                <a href="beauty.html" class="category" data-category="تجميل">
+                    <i class="fas fa-magic"></i>
+                    <h2>تجميل</h2>
+                </a>
+                <a href="hotels.html" class="category" data-category="فنادق">
+                    <i class="fas fa-hotel"></i>
+                    <h2>فنادق</h2>
+                </a>
+                <a href="workers.html" class="category" data-category="أيادي عاملة">
+                    <i class="fas fa-hands-helping"></i>
+                    <h2>أيادي عاملة</h2>
+                </a>
+                <a href="taxis.html" class="category" data-category="سيارات أجرة">
+                    <i class="fas fa-taxi"></i>
+                    <h2>سيارات أجرة</h2>
+                </a>
+                <a href="tuktuks.html" class="category" data-category="تكاتك أجرة">
+                    <i class="fas fa-motorcycle"></i>
+                    <h2>تكاتك أجرة</h2>
+                </a>
+                <a href="drinks.html" class="category" data-category="مرطبات">
+                    <i class="fas fa-glass-cheers"></i>
+                    <h2>مرطبات</h2>
+                </a>
+                <a href="fast-food.html" class="category" data-category="وجبات سريعة">
+                    <i class="fas fa-hamburger"></i>
+                    <h2>وجبات سريعة</h2>
+                </a>
+                <a href="salons.html" class="category" data-category="صالونات">
+                    <i class="fas fa-cut"></i>
+                    <h2>صالونات</h2>
+                </a>
+                <a href="wedding-suits.html" class="category" data-category="بدلات أعراس">
+                    <i class="fas fa-tshirt"></i>
+                    <h2>بدلات أعراس</h2>
+                </a>
+                <a href="clothes.html" class="category" data-category="ملابس">
+                    <i class="fas fa-shopping-bag"></i>
+                    <h2>ملابس</h2>
+                </a>
+                <a href="malls.html" class="category" data-category="مولات">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>مولات</h2>
+                </a>
+                <a href="electronics.html" class="category" data-category="أجهزة كهربائية">
+                    <i class="fas fa-blender"></i>
+                    <h2>أجهزة كهربائية</h2>
+                </a>
+                <a href="mobiles.html" class="category" data-category="موبايلات">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h2>موبايلات</h2>
+                </a>
+                <a href="watches.html" class="category" data-category="ساعات">
+                    <i class="fas fa-clock"></i>
+                    <h2>ساعات</h2>
+                </a>
+                <a href="accessories.html" class="category" data-category="إكسسوارات">
+                    <i class="fas fa-gem"></i>
+                    <h2>إكسسوارات</h2>
+                </a>
+                <a href="furniture.html" class="category" data-category="مفروشات">
+                    <i class="fas fa-couch"></i>
+                    <h2>مفروشات</h2>
+                </a>
+                <a href="tech.html" class="category" data-category="إلكترونيات">
+                    <i class="fas fa-laptop"></i>
+                    <h2>إلكترونيات</h2>
+                </a>
+                <a href="pharmacies.html" class="category" data-category="صيدليات">
+                    <i class="fas fa-pills"></i>
+                    <h2>صيدليات</h2>
+                </a>
+                <a href="universities.html" class="category" data-category="جامعات">
+                    <i class="fas fa-university"></i>
+                    <h2>جامعات</h2>
+                </a>
+                <a href="private-schools.html" class="category" data-category="مدارس خاصة">
+                    <i class="fas fa-school"></i>
+                    <h2>مدارس خاصة</h2>
+                </a>
+                <a href="travel-tickets.html" class="category" data-category="تذاكر سفر">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h2>تذاكر سفر</h2>
+                </a>
+                <a href="teachers.html" class="category" data-category="مدرسين">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h2>مدرسين</h2>
+                </a>
+                <a href="barber-tools.html" class="category" data-category="أدوات حلاقة">
+                    <i class="fas fa-cut"></i>
+                    <h2>أدوات حلاقة</h2>
+                </a>
+                <a href="motorcycles.html" class="category" data-category="دراجات نارية">
+                    <i class="fas fa-motorcycle"></i>
+                    <h2>دراجات نارية</h2>
+                </a>
+                <a href="military-clothes.html" class="category" data-category="ملابس عسكرية">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>ملابس عسكرية</h2>
+                </a>
+                <a href="lab-tools.html" class="category" data-category="أدوات مختبر">
+                    <i class="fas fa-vial"></i>
+                    <h2>أدوات مختبر</h2>
+                </a>
+                <a href="clinics.html" class="category" data-category="عيادات">
+                    <i class="fas fa-clinic-medical"></i>
+                    <h2>عيادات</h2>
+                </a>
+            </div>
+        </main>
+    </div>
+  <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const sideMenu = document.getElementById('sideMenu');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        const categories = document.querySelectorAll('.category');
+
+        // فتح القائمة الجانبية
+        menuBtn.addEventListener('click', () => {
+            sideMenu.classList.add('active');
         });
 
-        fileInput.addEventListener('change', function() {
-            if (fileInput.files.length > 0) {
-                fileInputButton.textContent = 'تم اختيار الصورة';
-            } else {
-                fileInputButton.textContent = 'اختر صورة';
-            }
+        // إغلاق القائمة الجانبية
+        closeMenuBtn.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
         });
 
-        // إضافة التحقق من صحة الإدخال
-        lawyerForm.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', function() {
-                if (this.checkValidity()) {
-                    this.style.borderColor = '#27ae60';
+        // التركيز على حقل البحث عند النقر على أيقونة البحث
+        searchBtn.addEventListener('click', () => {
+            searchInput.focus();
+        });
+
+        // وظيفة البحث في الفئات
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            categories.forEach(category => {
+                const categoryName = category.getAttribute('data-category').toLowerCase();
+                if (categoryName.includes(searchTerm)) {
+                    category.style.display = 'flex';
                 } else {
-                    this.style.borderColor = '#e74c3c';
+                    category.style.display = 'none';
                 }
             });
         });
 
-        // ... (بقية الكود JavaScript يبقى كما هو)
-        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
-            authDomain: "messageemeapp.firebaseapp.com",
-            databaseURL: "https://messageemeapp-default-rtdb.firebaseio.com",
-            projectId: "messageemeapp",
-            storageBucket: "messageemeapp.appspot.com",
-            messagingSenderId: "278680662267",
-            appId: "1:278680662267:web:cb9a86a0cd4709b86222b2"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-
-        const lawyerForm = document.getElementById('lawyer-form');
-        const statusElement = document.getElementById('status');
-        const modal = document.getElementById('lawyer-modal');
-        const closeModalBtn = modal.querySelector('.close');
-
-        lawyerForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            statusElement.innerHTML = 'جاري إضافة المحامي...';
-            statusElement.className = '';
-
-            try {
-                // Upload image
-                const file = lawyerForm.image.files[0];
-                const storageRef = storage.ref('lawyer_images/' + Date.now() + '_' + file.name);
-                const snapshot = await storageRef.put(file);
-                const image = await snapshot.ref.getDownloadURL();
-
-                // Add lawyer data to Firestore
-                const lawyer = {
-                    name: lawyerForm.name.value,
-                    address: lawyerForm.address.value,
-                    phone: lawyerForm.phone.value,
-                    description: lawyerForm.description.value,
-                    whatsapp: lawyerForm.whatsapp.value,
-                    facebook: lawyerForm.facebook.value,
-                    instagram: lawyerForm.instagram.value,
-                    image: image,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                const docRef = await db.collection("lawyers").add(lawyer);
-                console.log("Document written with ID: ", docRef.id);
-                statusElement.innerHTML = 'تمت إضافة المحامي بنجاح!';
-                statusElement.className = 'success';
-                lawyerForm.reset();
+        // إضافة تأثير عند النقر على الفئات
+        categories.forEach(category => {
+            category.addEventListener('click', (e) => {
+                // منع السلوك الافتراضي للرابط
+                e.preventDefault();
                 
-                // Display the modal with the new lawyer's information
-                displayLawyerModal(lawyer);
-            } catch (error) {
-                console.error("Error adding lawyer: ", error);
-                statusElement.innerHTML = 'حدث خطأ أثناء إضافة المحامي. يرجى المحاولة مرة أخرى.';
-                statusElement.className = 'error';
+                // إضافة تأثير النقر
+                category.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    category.style.transform = 'scale(1)';
+                    // الانتقال إلى الصفحة بعد التأثير
+                    window.location.href = category.getAttribute('href');
+                }, 200);
+            });
+        });
+
+        // إغلاق القائمة الجانبية عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target) && sideMenu.classList.contains('active')) {
+                sideMenu.classList.remove('active');
             }
         });
 
-        function displayLawyerModal(lawyer) {
-            modal.querySelector('.modal-image').src = lawyer.image;
-            modal.querySelector('#modal-name').textContent = lawyer.name;
-            modal.querySelector('#modal-address').textContent = lawyer.address;
-            modal.querySelector('#modal-phone').textContent = lawyer.phone;
-            modal.querySelector('#modal-description').textContent = lawyer.description;
-            modal.querySelector('#modal-whatsapp').href = `https://wa.me/${lawyer.whatsapp}`;
-            modal.querySelector('#modal-facebook').href = lawyer.facebook;
-            modal.querySelector('#modal-instagram').href = lawyer.instagram;
-            modal.style.display = 'block';
+        // تحميل الفئات المفضلة من التخزين المحلي (إذا وجدت)
+        function loadFavorites() {
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            categories.forEach(category => {
+                const categoryName = category.getAttribute('data-category');
+                if (favorites.includes(categoryName)) {
+                    const favoriteIcon = document.createElement('i');
+                    favoriteIcon.className = 'fas fa-star favorite-icon';
+                    category.appendChild(favoriteIcon);
+                }
+            });
         }
 
-        closeModalBtn.onclick = function() {
-            modal.style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
+        // إضافة أو إزالة فئة من المفضلة
+        function toggleFavorite(category) {
+            const categoryName = category.getAttribute('data-category');
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            
+            if (favorites.includes(categoryName)) {
+                favorites = favorites.filter(fav => fav !== categoryName);
+                category.querySelector('.favorite-icon').remove();
+            } else {
+                favorites.push(categoryName);
+                const favoriteIcon = document.createElement('i');
+                favoriteIcon.className = 'fas fa-star favorite-icon';
+                category.appendChild(favoriteIcon);
             }
+            
+            localStorage.setItem('favorites', JSON.stringify(favorites));
         }
 
-        document.getElementById('cancel-button').onclick = function() {
-            lawyerForm.reset();
-            statusElement.innerHTML = '';
-            statusElement.className = '';
-        }
+        // إضافة مستمع أحداث للنقر المطول على الفئات
+        categories.forEach(category => {
+            let longPressTimer;
+            
+            category.addEventListener('touchstart', (e) => {
+                longPressTimer = setTimeout(() => {
+                    e.preventDefault();
+                    toggleFavorite(category);
+                }, 500);
+            });
+
+            category.addEventListener('touchend', () => {
+                clearTimeout(longPressTimer);
+            });
+
+            category.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                toggleFavorite(category);
+            });
+        });
+
+        // تحميل الفئات المفضلة عند تحميل الصفحة
+        window.addEventListener('load', loadFavorites);
     </script>
 </body>
 </html>
