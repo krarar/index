@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عارض بيانات Firebase المحسن</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f5a623;
+        --background-color: #f0f4f8;
+        --text-color: #333;
+        --border-radius: 10px;
+        --sidebar-width: 60px;
+        --sidebar-bg-color: #333;
+        --main-content-padding: 20px;
+        --border-color: #ddd; /* لون الإطار بين الشريط الجانبي والمحتوى الرئيسي */
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        display: flex;
+        overflow: hidden; /* لضمان عدم ظهور شريط التمرير */
+    }
+    
+    .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--sidebar-bg-color);
+        height: 100vh;
+        position: fixed; /* تغيير إلى fixed لضمان بقاءه في مكانه عند التمرير */
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 30px;
+        z-index: 1; /* لضمان أن الشريط الجانبي يظهر فوق المحتوى */
+        transition: width 0.3s ease; /* انسيابية في تغيير العرض */
+    }
+    
+    .sidebar a {
+        color: white;
+        font-size: 35px; /* تصغير حجم الخط ليتناسب مع الشريط الجانبي */
+        margin-bottom: 30px;
+        transition: color 0.3s ease;
+    }
+    
+    .sidebar a:hover {
+        color: var(--secondary-color);
+    }
+    
+    .sidebar-toggle {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 18px; /* تكبير حجم الخط لسهولة الوصول */
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 3;
+    }
+    
+    .main-content {
+        margin-left: calc(var(--sidebar-width) + 700px); /* توفير مساحة للإطار */
+        padding: var(--main-content-padding);
+        flex-grow: 1;
+        overflow-y: auto; /* لتفعيل التمرير إذا لزم الأمر */
+        border-left: 2px solid var(--border-color); /* إضافة إطار بين الشريط الجانبي والمحتوى الرئيسي */
+    }
+    
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0;
+    }
+    
+    .column {
+        background-color: white;
+        padding: 20px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+        margin-top: 0;
+        font-size: 24px;
+        color: var(--primary-color);
+        text-align: center;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+    }
+    
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    li {
+        cursor: pointer;
+        padding: 12px;
+        margin-bottom: 10px;
+        background-color: #e9ecef;
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+    }
+    
+    li:hover {
+        background-color: var(--secondary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .document {
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: var(--border-radius);
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .document:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .document h3 {
+        margin-top: 0;
+        font-size: 20px;
+        color: var(--primary-color);
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    
+    .document p {
+        margin: 10px 0;
+        font-size: 16px;
+        color: var(--text-color);
+    }
+    
+    .document img {
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--border-radius);
+        margin: 20px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    button:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+    
+    .edit-btn {
+        background-color: var(--primary-color);
+    }
+    
+    .delete-btn {
+        background-color: #dc3545;
+    }
+    
+    #loading {
+        text-align: center;
+        font-style: italic;
+        margin: 20px;
+        color: var(--text-color);
+    }
+    
+    #fileInput {
+        display: none;
+    }
+    
+</style>
+</head>
+<body>
+
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+<div class="sidebar">
+<a href="#" onclick="loadPage('home')"><i class="fas fa-home"></i></a>
+<a href="http://127.0.0.1:5500/%D8%AA%D8%AC%D9%85%D9%8A%D9%84/beauty.html" onclick="loadPage('users')"><i class="fas fa-user"></i></a>
+<a href="http://127.0.0.1:5500/%D8%AA%D8%AC%D9%85%D9%8A%D9%84/%D8%AD%D8%AC%D8%B2%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%A8.html" onclick="loadPage('settings')"><i class="fas fa-cog"></i></a>
+<a href="#" onclick="loadPage('messages')"><i class="fas fa-envelope"></i></a>
+<a href="#" onclick="loadPage('statistics')"><i class="fas fa-chart-bar"></i></a>
+<a href="#" onclick="loadPage('calendar')"><i class="fas fa-calendar"></i></a>
+<a href="#" onclick="loadPage('documents')"><i class="fas fa-file"></i></a>
+<a href="#" onclick="loadPage('gallery')"><i class="fas fa-image"></i></a>
+<a href="#" onclick="loadPage('videos')"><i class="fas fa-video"></i></a>
+<a href="#" onclick="loadPage('links')"><i class="fas fa-link"></i></a>
+</div>
+<div class="main-content" id="mainContent">
+<!-- المحتوى الرئيسي سيتم تحميله هنا -->
+</div>
+
+    </div>
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyDGpAHia_wEmrhnmYjrPf1n1TrAzwEMiAI",
+authDomain: "messageemeapp.firebaseapp.com",
+databaseURL: "https://messageemeapp-default-rtdb.firebaseio.com",
+projectId: "messageemeapp",
+storageBucket: "messageemeapp.appspot.com",
+messagingSenderId: "278680662267",
+appId: "1:278680662267:web:cb9a86a0cd4709b86222b2"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+const mainContent = document.getElementById('mainContent');
+const fileInput = document.createElement('input');
+fileInput.type = 'file';
+fileInput.accept = 'image/*';
+fileInput.id = 'fileInput';
+const collections = [
+'bookings1', 'bookings2', 'lawyers', 'lawyers1', 'lawyers2', 'lawyers3', 
+'lawyers4', 'lawyers5', 'lawyers6', 'lawyers7', 'lawyers8', 'ldoctors', 
+'messages', 'meta', 'posts', 'stories', 'bookings'
+];
+function loadPage(pageId) {
+mainContent.innerHTML = '<div id="loading">جاري تحميل البيانات...</div>';
+switch(pageId) {
+case 'home':
+displayCollections();
+break;
+case 'users':
+case 'settings':
+case 'messages':
+case 'statistics':
+case 'calendar':
+case 'documents':
+case 'gallery':
+case 'videos':
+case 'links':
+mainContent.innerHTML = `<h2>صفحة ${pageId}</h2><p>محتوى الصفحة ${pageId} سيتم إضافته لاحقًا.</p>`;
+break;
+default:
+mainContent.innerHTML = '<h2>الصفحة غير موجودة</h2>';
+}
+}
+function displayCollections() {
+let content = `
+<div class="container">
+<div class="column">
+<h2>المجموعات</h2>
+<ul id="collectionsList">
+${collections.map(collection => `<li onclick="fetchAndDisplayDocuments('${collection}')">${collection}</li>`).join('')}
+</ul>
+</div>
+<div class="column">
+<h2>المستندات والبيانات</h2>
+<div id="documentsData"></div>
+</div>
+</div>
+`;
+mainContent.innerHTML = content;
+}
+async function fetchAndDisplayDocuments(collectionId) {
+const documentsData = document.getElementById('documentsData');
+try {
+documentsData.innerHTML = `<h3>مستندات المجموعة: ${collectionId}</h3>`;
+const snapshot = await db.collection(collectionId).get();
+snapshot.forEach(doc => {
+const docDiv = document.createElement('div');
+docDiv.className = 'document';
+docDiv.innerHTML = `<h3>المستند: ${doc.id}</h3>`;
+const data = doc.data();
+for (let field in data) {
+const value = data[field];
+const p = document.createElement('p');
+p.innerHTML = `<strong>${field}:</strong> `;
+if (typeof value === 'string' && value.startsWith('http') && (value.endsWith('.jpg') || value.endsWith('.png') || value.endsWith('.gif'))) {
+fetchAndDisplayImage(value, p);
+const editBtn = createEditImageButton(doc.id, field, collectionId);
+p.appendChild(editBtn);
+} else {
+p.innerHTML += `<span>${JSON.stringify(value)}</span>`;
+const editBtn = createEditButton(doc.id, field, value, collectionId);
+p.appendChild(editBtn);
+}
+docDiv.appendChild(p);
+}
+const buttonsDiv = createDocumentButtons(doc.id, collectionId);
+docDiv.appendChild(buttonsDiv);
+documentsData.appendChild(docDiv);
+});
+} catch (error) {
+console.error("Error fetching documents: ", error);
+documentsData.innerHTML = 'حدث خطأ أثناء تحميل المستندات. يرجى المحاولة مرة أخرى.';
+}
+}
+async function fetchAndDisplayImage(url, container) {
+try {
+const img = document.createElement('img');
+img.src = url;
+img.alt = 'صورة المستند';
+img.onload = () => {
+container.appendChild(img);
+};
+img.onerror = () => {
+console.error('Failed to load image:', url);
+container.innerHTML += 'فشل تحميل الصورة';
+};
+} catch (error) {
+console.error('Error fetching image:', error);
+container.innerHTML += 'فشل تحميل الصورة';
+}
+}
+function createEditButton(docId, field, value, collectionId) {
+const btn = document.createElement('button');
+btn.textContent = 'تعديل';
+btn.className = 'edit-btn';
+btn.onclick = () => {
+const newValue = prompt(`تعديل القيمة لـ ${field}`, value);
+if (newValue !== null) {
+updateDocumentField(docId, field, newValue, collectionId);
+}
+};
+return btn;
+}
+function createEditImageButton(docId, field, collectionId) {
+const btn = document.createElement('button');
+btn.textContent = 'تعديل الصورة';
+btn.className = 'edit-btn';
+btn.onclick = () => {
+fileInput.onchange = async (event) => {
+const file = event.target.files[0];
+if (file) {
+const storageRef = storage.ref().child(`${collectionId}/${docId}/${field}`);
+await storageRef.put(file);
+const downloadURL = await storageRef.getDownloadURL();
+updateDocumentField(docId, field, downloadURL, collectionId);
+}
+};
+fileInput.click();
+};
+return btn;
+}
+async function updateDocumentField(docId, field, newValue, collectionId) {
+try {
+await db.collection(collectionId).doc(docId).update({
+[field]: newValue
+});
+alert(`تم تحديث ${field} بنجاح.`);
+fetchAndDisplayDocuments(collectionId);
+} catch (error) {
+console.error("Error updating document: ", error);
+alert('حدث خطأ أثناء تحديث المستند.');
+}
+}
+function createDocumentButtons(docId, collectionId) {
+const div = document.createElement('div');
+div.className = 'buttons';
+const deleteBtn = document.createElement('button');
+deleteBtn.className = 'delete-btn';
+deleteBtn.textContent = 'حذف المستند';
+deleteBtn.onclick = () => deleteDocument(docId, collectionId);
+div.appendChild(deleteBtn);
+return div;
+}
+async function deleteDocument(docId, collectionId) {
+if (confirm('هل أنت متأكد أنك تريد حذف هذا المستند؟')) {
+try {
+await db.collection(collectionId).doc(docId).delete();
+alert('تم حذف المستند بنجاح.');
+fetchAndDisplayDocuments(collectionId);
+} catch (error) {
+console.error("Error deleting document: ", error);
+alert('حدث خطأ أثناء حذف المستند.');
+}
+}
+}
+window.onload = () => loadPage('home');
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.style.width = sidebar.style.width === '0px' ? '60px' : '0px';
+    document.querySelector('.main-content').style.marginLeft = sidebar.style.width;
+}
+</script>
+</body>
+</html>

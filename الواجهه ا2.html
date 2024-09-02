@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدليل الشامل المحدث</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        
+    :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #3498db;
+            --text-color: #34495e;
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+        .title-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .title-bar button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .title-bar h2 {
+            margin: 0;
+            font-size: 22px;
+            text-align: center;
+            flex: 1;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px 15px;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.0em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        .category {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+        }
+        .category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .category i {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        .category:hover i {
+            color: var(--secondary-color);
+        }
+        .category h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: var(--card-bg);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+        .side-menu.active {
+            right: 0;
+        }
+        .side-menu-content {
+            padding: 20px;
+        }
+        .close-btn {
+            text-align: left;
+            padding: 10px;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .favorite-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: gold;
+            font-size: 18px;
+        }
+        #sidebar nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #sidebar nav ul li {
+            margin-bottom: 10px;
+        }
+        #sidebar nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        #sidebar nav ul li a i {
+            margin-left: 10px;
+            font-size: 20px;
+        }
+    </style>}
+    </style>
+</head>
+<body>
+    <div class="title-bar">
+        <button id="menuBtn"><i class="fas fa-bars"></i></button>
+        <h2>الدليل الشامل</h2>
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
+    </div>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="side-menu-content">
+            <div class="close-btn">
+                <button id="closeMenuBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <h3>القائمة الجانبية</h3>
+            <aside id="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+                        <li><a href="favorites.html"><i class="fas fa-heart"></i> المفضلة</a></li>
+                        <li><a href="recent.html"><i class="fas fa-history"></i> آخر الزيارات</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                        <li><a href="about.html"><i class="fas fa-info-circle"></i> عن التطبيق</a></li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>الدليل الشامل المحدث</h1>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="ابحث في الفئات...">
+        </div>
+
+        <main>
+            <div class="categories-grid">
+                <a href="lawyers.html" class="category" data-category="محامون">
+                    <i class="fas fa-gavel"></i>
+                    <h2>محامون</h2>
+                </a>
+                <a href="doctors.html" class="category" data-category="أطباء">
+                    <i class="fas fa-user-md"></i>
+                    <h2>أطباء</h2>
+                </a>
+                <a href="cars.html" class="category" data-category="سيارات">
+                    <i class="fas fa-car"></i>
+                    <h2>سيارات</h2>
+                </a>
+                <a href="real-estate.html" class="category" data-category="عقارات">
+                    <i class="fas fa-home"></i>
+                    <h2>عقارات</h2>
+                </a>
+                <a href="sports.html" class="category" data-category="رياضة">
+                    <i class="fas fa-futbol"></i>
+                    <h2>رياضة</h2>
+                </a>
+                <a href="beauty.html" class="category" data-category="تجميل">
+                    <i class="fas fa-magic"></i>
+                    <h2>تجميل</h2>
+                </a>
+                <a href="hotels.html" class="category" data-category="فنادق">
+                    <i class="fas fa-hotel"></i>
+                    <h2>فنادق</h2>
+                </a>
+                <a href="workers.html" class="category" data-category="أيادي عاملة">
+                    <i class="fas fa-hands-helping"></i>
+                    <h2>أيادي عاملة</h2>
+                </a>
+                <a href="taxis.html" class="category" data-category="سيارات أجرة">
+                    <i class="fas fa-taxi"></i>
+                    <h2>سيارات أجرة</h2>
+                </a>
+                <a href="tuktuks.html" class="category" data-category="تكاتك أجرة">
+                    <i class="fas fa-motorcycle"></i>
+                    <h2>تكاتك أجرة</h2>
+                </a>
+                <a href="drinks.html" class="category" data-category="مرطبات">
+                    <i class="fas fa-glass-cheers"></i>
+                    <h2>مرطبات</h2>
+                </a>
+                <a href="fast-food.html" class="category" data-category="وجبات سريعة">
+                    <i class="fas fa-hamburger"></i>
+                    <h2>وجبات سريعة</h2>
+                </a>
+                <a href="salons.html" class="category" data-category="صالونات">
+                    <i class="fas fa-cut"></i>
+                    <h2>صالونات</h2>
+                </a>
+                <a href="wedding-suits.html" class="category" data-category="بدلات أعراس">
+                    <i class="fas fa-tshirt"></i>
+                    <h2>بدلات أعراس</h2>
+                </a>
+                <a href="clothes.html" class="category" data-category="ملابس">
+                    <i class="fas fa-shopping-bag"></i>
+                    <h2>ملابس</h2>
+                </a>
+                <a href="malls.html" class="category" data-category="مولات">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>مولات</h2>
+                </a>
+                <a href="electronics.html" class="category" data-category="أجهزة كهربائية">
+                    <i class="fas fa-blender"></i>
+                    <h2>أجهزة كهربائية</h2>
+                </a>
+                <a href="mobiles.html" class="category" data-category="موبايلات">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h2>موبايلات</h2>
+                </a>
+                <a href="watches.html" class="category" data-category="ساعات">
+                    <i class="fas fa-clock"></i>
+                    <h2>ساعات</h2>
+                </a>
+                <a href="accessories.html" class="category" data-category="إكسسوارات">
+                    <i class="fas fa-gem"></i>
+                    <h2>إكسسوارات</h2>
+                </a>
+                <a href="furniture.html" class="category" data-category="مفروشات">
+                    <i class="fas fa-couch"></i>
+                    <h2>مفروشات</h2>
+                </a>
+                <a href="tech.html" class="category" data-category="إلكترونيات">
+                    <i class="fas fa-laptop"></i>
+                    <h2>إلكترونيات</h2>
+                </a>
+                <a href="pharmacies.html" class="category" data-category="صيدليات">
+                    <i class="fas fa-pills"></i>
+                    <h2>صيدليات</h2>
+                </a>
+                <a href="universities.html" class="category" data-category="جامعات">
+                    <i class="fas fa-university"></i>
+                    <h2>جامعات</h2>
+                </a>
+                <a href="private-schools.html" class="category" data-category="مدارس خاصة">
+                    <i class="fas fa-school"></i>
+                    <h2>مدارس خاصة</h2>
+                </a>
+                <a href="travel-tickets.html" class="category" data-category="تذاكر سفر">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h2>تذاكر سفر</h2>
+                </a>
+                <a href="teachers.html" class="category" data-category="مدرسين">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h2>مدرسين</h2>
+                </a>
+                <a href="barber-tools.html" class="category" data-category="أدوات حلاقة">
+                    <i class="fas fa-cut"></i>
+                    <h2>أدوات حلاقة</h2>
+                </a>
+                <a href="motorcycles.html" class="category" data-category="دراجات نارية">
+                    <i class="fas fa-motorcycle"></i>
+                    <h2>دراجات نارية</h2>
+                </a>
+                <a href="military-clothes.html" class="category" data-category="ملابس عسكرية">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>ملابس عسكرية</h2>
+                </a>
+                <a href="lab-tools.html" class="category" data-category="أدوات مختبر">
+                    <i class="fas fa-vial"></i>
+                    <h2>أدوات مختبر</h2>
+                </a>
+                <a href="clinics.html" class="category" data-category="عيادات">
+                    <i class="fas fa-clinic-medical"></i>
+                    <h2>عيادات</h2>
+                </a>
+            </div>
+        </main>
+    </div>
+  <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const sideMenu = document.getElementById('sideMenu');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        const categories = document.querySelectorAll('.category');
+
+        // فتح القائمة الجانبية
+        menuBtn.addEventListener('click', () => {
+            sideMenu.classList.add('active');
+        });
+
+        // إغلاق القائمة الجانبية
+        closeMenuBtn.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+        });
+
+        // التركيز على حقل البحث عند النقر على أيقونة البحث
+        searchBtn.addEventListener('click', () => {
+            searchInput.focus();
+        });
+
+        // وظيفة البحث في الفئات
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            categories.forEach(category => {
+                const categoryName = category.getAttribute('data-category').toLowerCase();
+                if (categoryName.includes(searchTerm)) {
+                    category.style.display = 'flex';
+                } else {
+                    category.style.display = 'none';
+                }
+            });
+        });
+
+        // إضافة تأثير عند النقر على الفئات
+        categories.forEach(category => {
+            category.addEventListener('click', (e) => {
+                // منع السلوك الافتراضي للرابط
+                e.preventDefault();
+                
+                // إضافة تأثير النقر
+                category.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    category.style.transform = 'scale(1)';
+                    // الانتقال إلى الصفحة بعد التأثير
+                    window.location.href = category.getAttribute('href');
+                }, 200);
+            });
+        });
+
+        // إغلاق القائمة الجانبية عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target) && sideMenu.classList.contains('active')) {
+                sideMenu.classList.remove('active');
+            }
+        });
+
+        // تحميل الفئات المفضلة من التخزين المحلي (إذا وجدت)
+        function loadFavorites() {
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            categories.forEach(category => {
+                const categoryName = category.getAttribute('data-category');
+                if (favorites.includes(categoryName)) {
+                    const favoriteIcon = document.createElement('i');
+                    favoriteIcon.className = 'fas fa-star favorite-icon';
+                    category.appendChild(favoriteIcon);
+                }
+            });
+        }
+
+        // إضافة أو إزالة فئة من المفضلة
+        function toggleFavorite(category) {
+            const categoryName = category.getAttribute('data-category');
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            
+            if (favorites.includes(categoryName)) {
+                favorites = favorites.filter(fav => fav !== categoryName);
+                category.querySelector('.favorite-icon').remove();
+            } else {
+                favorites.push(categoryName);
+                const favoriteIcon = document.createElement('i');
+                favoriteIcon.className = 'fas fa-star favorite-icon';
+                category.appendChild(favoriteIcon);
+            }
+            
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+        }
+
+        // إضافة مستمع أحداث للنقر المطول على الفئات
+        categories.forEach(category => {
+            let longPressTimer;
+            
+            category.addEventListener('touchstart', (e) => {
+                longPressTimer = setTimeout(() => {
+                    e.preventDefault();
+                    toggleFavorite(category);
+                }, 500);
+            });
+
+            category.addEventListener('touchend', () => {
+                clearTimeout(longPressTimer);
+            });
+
+            category.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                toggleFavorite(category);
+            });
+        });
+
+        // تحميل الفئات المفضلة عند تحميل الصفحة
+        window.addEventListener('load', loadFavorites);
+    </script>
+</body>
+</html>
